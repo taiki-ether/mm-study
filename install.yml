@@ -1,0 +1,93 @@
+- hosts: all
+  become: True
+
+  tasks:
+  ## 基本のセットアップをしてみよう
+  - name: install docker
+    dnf: 
+      name: docker
+      latest: state
+
+  - name: install docker-compose binary
+    command: 
+      cmd: curl -L https://github.com/docker/compose/releases/download/v2.19.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+
+  - name: change permission /usr/local/bin/docker-compose
+    file: 
+    path: /usr/local/bin/docker-compose
+    mode: 0755
+
+  - name: install require package
+    dnf: 
+      name: '{{ require_packages }}'
+    vars:
+      require_packages: 
+        - nginx
+        - git
+
+  ## mattermostを起動してみよう
+  - name: git clone
+    git: 
+      repo: https://github.com/mattermost/docker
+      dest: /opt/mattermost
+
+  - name: copy .env
+    copy: 
+      remote_src: true
+      src: /opt/mattermost/env.example
+      dest: /opt/mattermost/.env
+
+  - name: edit .env
+    replace: 
+    path: /opt/mattermost/.env
+    regexp: 'mm.example.com'
+    replace: '{{ MY_DOMAIN }}'
+  
+  - name: put mattermost-docker.service 
+    file: 
+      src: ./files/mattermost-docker.service
+      dest: /usr/lib/systemd/system/
+      owner: root
+      group: root
+      mode: 0664
+
+  - name: start mattermost
+    systemd:
+      name: mattermost-docker.service
+      state: start
+      daemon_reload: true
+      enabled: true
+
+  ## nginx を前段に置いてみよう
+  - name: config nginx 
+    template: 
+      src: ./templates/mattermost_nginx.conf
+      dest: '/etc/nginx/{{ MY_DOMAIN }}.conf'
+      owner: root
+      group: root
+      mode: 0664
+
+  - name: put htaccess
+    file:
+      src: ./files/.htpasswd
+      dest: /etc/nginx/conf.d/
+      owner: root
+      group: root
+     mode: 0664
+
+  - name: make logdir
+    file:
+      path: '/var/log/{{ MY_DOMAIN }}'
+      state: directory
+      owner: root
+      group: root
+      mode: 0775
+
+  - name: start nginx
+    systemd:
+      name: nginx
+      state: start
+      enabled: true
+
+  vars_files:
+    - vars/vars.yml
