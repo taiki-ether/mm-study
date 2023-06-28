@@ -6,6 +6,16 @@
   - name: install docker
     dnf:
       name: docker
+    when:
+      - ansible_distribution == 'Amazon'
+      - ansible_distribution_major_version == "2023"
+
+  - name: install docker
+    yum:
+      name: docker
+    when:
+      - ansible_distribution == 'Amazon'
+      - ansible_distribution_major_version != "2023"
 
   - name: install docker-compose binary
     shell: 'curl -L https://github.com/docker/compose/releases/download/v2.19.0/docker-compose-{{ ansible_system }}-{{ ansible_architecture }} > /usr/local/bin/docker-compose'
@@ -22,6 +32,20 @@
       require_packages:
         - nginx
         - git
+    when:
+      - ansible_distribution == 'Amazon'
+      - ansible_distribution_major_version == "2023"
+
+  - name: install require package
+    yum:
+      name: '{{ require_packages }}'
+    vars:
+      require_packages:
+        - nginx
+        - git
+    when:
+      - ansible_distribution == 'Amazon'
+      - ansible_distribution_major_version != "2023"
 
   ## mattermostを起動してみよう
   - name: git clone
