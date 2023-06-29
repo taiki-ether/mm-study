@@ -71,6 +71,29 @@
       regexp: 'mm.example.com'
       replace: '{{ MY_DOMAIN }}'
 
+  - name: make directorys
+    file: 
+      path: '/opt/mattermost/volumes/app/mattermost/{{ item }}'
+      state: directory
+      owner: root
+      group: root
+      mode: 0775
+    vars:
+      item: 
+        - config
+        - data
+        - plugins
+        - cluent/plugins
+        - bleve-indexes
+
+  - name: '/opt/mattermost/volumes/app/mattermost/config'
+    file: 
+      path: '/opt/mattermost/volumes/app/mattermost/config'
+      state: directory
+      owner: 2000
+      group: 2000
+      mode: 0775
+
   - name: put mattermost-docker.service
     copy:
       src: ./files/mattermost-docker.service
