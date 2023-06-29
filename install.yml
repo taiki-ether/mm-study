@@ -128,7 +128,7 @@
 
   - name: make logdir
     file:
-      path: '/var/log/{{ MY_DOMAIN }}'
+      path: '/var/log/nginx/{{ MY_DOMAIN }}'
       state: directory
       owner: root
       group: root
