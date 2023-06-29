@@ -113,7 +113,7 @@
   - name: config nginx
     template:
       src: ./templates/mattermost_nginx.conf
-      dest: '/etc/nginx/{{ MY_DOMAIN }}.conf'
+      dest: '/etc/nginx/conf.d/{{ MY_DOMAIN }}.conf'
       owner: root
       group: root
       mode: 0664
