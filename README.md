@@ -24,7 +24,7 @@ MY_DOMAINの調整 (お好きなドメインに)
 # vi vars/vars.yml
 
 Basic認証の情報変更 (お好きなユーザ・パスワードに)
-# vi files/.htpasswd
+# htpasswd files/.htpasswd test
 
 # ansible-playbook install.yml
 ```
