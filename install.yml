@@ -57,23 +57,23 @@
   - name: git clone
     git:
       repo: https://github.com/mattermost/docker
-      dest: /opt/mattermost
+      dest: /opt/mattermost-docker
 
   - name: copy .env
     copy:
       remote_src: true
-      src: /opt/mattermost/env.example
-      dest: /opt/mattermost/.env
+      src: /opt/mattermost-docker/env.example
+      dest: /opt/mattermost-dcoker/.env
 
   - name: edit .env
     replace:
-      path: /opt/mattermost/.env
+      path: /opt/mattermost-docker/.env
       regexp: 'mm.example.com'
       replace: '{{ MY_DOMAIN }}'
 
   - name: make directorys
     file: 
-      path: '/opt/mattermost/volumes/app/mattermost/{{ item }}'
+      path: '/opt/mattermost-docker/volumes/app/mattermost/{{ item }}'
       state: directory
       owner: root
       group: root
@@ -86,9 +86,9 @@
         - cluent/plugins
         - bleve-indexes
 
-  - name: '/opt/mattermost/volumes/app/mattermost/config'
+  - name: '/opt/mattermost-docker/volumes/app/mattermost/config'
     file: 
-      path: '/opt/mattermost/volumes/app/mattermost/config'
+      path: '/opt/mattermost-docker/volumes/app/mattermost/config'
       state: directory
       owner: 2000
       group: 2000
