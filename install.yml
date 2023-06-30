@@ -63,7 +63,7 @@
     copy:
       remote_src: true
       src: /opt/mattermost-docker/env.example
-      dest: /opt/mattermost-dcoker/.env
+      dest: /opt/mattermost-docker/.env
 
   - name: edit .env
     replace:
