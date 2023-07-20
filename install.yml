@@ -71,7 +71,7 @@
       regexp: 'mm.example.com'
       replace: '{{ MY_DOMAIN }}'
 
-  - name: make directorys
+  - name: make directories
     file: 
       path: '/opt/mattermost-docker/volumes/app/mattermost/{{ item }}'
       state: directory
